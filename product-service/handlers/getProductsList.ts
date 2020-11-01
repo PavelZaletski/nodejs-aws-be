@@ -9,6 +9,11 @@ export const getProductsList: APIGatewayProxyHandler = async (event, _context) =
     return {
       statusCode: 200,
       body: JSON.stringify(data, null, 2),
+      headers: {
+        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+      },
     };
   } catch (err) {
     return err;

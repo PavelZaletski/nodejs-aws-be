@@ -1,2 +1,2 @@
-export { getProductsList } from './getProductsList';
-export { getProductById } from './getProductById';
+export * from './getProductsList';
+export * from './getProductById';
