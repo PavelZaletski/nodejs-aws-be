@@ -7,13 +7,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@types/jest": "^26.0.15",
+    "node-fetch": "^2.6.1",
     "source-map-support": "^0.5.10"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.12.1",
-    "@babel/preset-typescript": "^7.12.1",
     "@types/aws-lambda": "^8.10.17",
+    "@types/jest": "^26.0.15",
     "@types/node": "^10.12.18",
     "@types/serverless": "^1.72.5",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
