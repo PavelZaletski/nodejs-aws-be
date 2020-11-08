@@ -1,0 +1,17 @@
+insert into products (title, description, price, img) values
+('Sony XBR-65A9G', 'Short Product Description1', 3300, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/398839-tvs-sony-xbr-65a9g-10006417.png'),
+('LG OLED65CXAUA', 'Short Product Description2', 2250, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/401489-60-inch-and-larger-tvs-lg-oled65cxaua-10014024.png'),
+('LG OLED65C9PUA', 'Short Product Description3', 2300, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/398835-tvs-lg-oled65c9pua-10006121.png'),
+('Samsung QN75Q80T', 'Short Product Description4', 2600, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/401622-60-inch-and-larger-tvs-samsung-qn75q80t-10014730.png'),
+('Sony XBR-75X950H', 'Short Product Description5', 2800, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/401738-60-inch-and-larger-tvs-sony-xbr-75x950h-10014764.png'),
+('Samsung QN75Q8DT', 'Short Product Description6', 2600, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/401740-60-inch-and-larger-tvs-samsung-qn75q8dt-10014881.png')
+
+
+
+insert into stocks (product_id, count) values
+('ad5dfe3f-03d1-4ed3-912c-03a5a00693b7', 10),
+('8e5a269c-f326-4bb6-a35e-eaa701531854', 12),
+('dea63d92-3acc-4743-a42e-f9f0a4c1fc68', 5),
+('15c30c5f-d87c-4edf-873c-721616db5911', 7),
+('1d263c84-7c28-4160-8013-ccc85bac83f7', 15),
+('05f8415e-bbd0-4b96-83a0-79865e107196', 9)

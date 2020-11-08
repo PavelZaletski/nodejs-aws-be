@@ -26,6 +26,10 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+
+      PG_PORT: 5432,
+      PG_DATABASE: 'lesson4',
+      PG_USERNAME: 'postgres',
     },
   },
   functions: {
@@ -48,6 +52,18 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products/{id}',
+          }
+        }
+      ]
+    },
+
+    addProduct: {
+      handler: 'handler.addProduct',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'products',
           }
         }
       ]
