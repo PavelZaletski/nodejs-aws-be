@@ -26,6 +26,8 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
 
     const result = await addProductToDb(data);
 
+    console.log('result - ', result);
+
     if (result.error) {
       console.log('Server error - ', result.error);
       return {

@@ -29,27 +29,33 @@ export const getProducts: any = async () => {
 }
 
 export const getProductItemById: any = async (id) => {
-  const product = data.find(item => item.id === +id);
-  return Promise.resolve(product);
+  const client = new Client(dbOptions);
+  await client.connect();
+  console.log('Connected to DB');
+
+  const ddlResult = await client.query(`
+  SELECT * FROM products WHERE id = '${id}'`);
+
+  console.log('Fetched product from DB - ', ddlResult.rows);
+
+  return Promise.resolve(ddlResult.rows);
 }
 
 export const addProductToDb: any = async ({ title, description, price, img, count }) => {
   const pool = new Pool(dbOptions);
-  const client = await pool.connect()
+  const client = await pool.connect();
   console.log('Connected to DB');
 
-  let result;
-
   try {
-    await client.query('BEGIN')
+    await client.query('BEGIN');
     const queryText = 'INSERT INTO products(title, description, price, img) VALUES($1, $2, $3, $4) RETURNING *';
     const res1 = await client.query(queryText, [title, description, +price, img]);
-    const savedProduct = res.rows && res.rows[0];
+    const savedProduct = res1.rows && res1.rows[0];
 
     console.log('saved product - ', savedProduct);
 
     const queryText2 = 'INSERT INTO stocks(product_id, count) VALUES($1, $2) RETURNING *';
-    const insertStockValues = [res.rows[0].id, count]
+    const insertStockValues = [res1.rows[0].id, count]
     const res2 = await client.query(queryText2, insertStockValues);
 
     const savedCount = res2.rows && res2.rows[0];
@@ -57,14 +63,12 @@ export const addProductToDb: any = async ({ title, description, price, img, coun
 
     await client.query('COMMIT');
     console.log('COMMIT');
-    result = { savedProduct, savedCount };
+    return Promise.resolve({ savedProduct, savedCount });
   } catch (e) {
     console.log('error occured - ', e);
     await client.query('ROLLBACK');
-    result = { error: e };
+    return Promise.resolve({ error: e });
   } finally {
-    console.log('client release');
     client.release();
-    Promise.resolve({ result });
   }
 }

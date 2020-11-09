@@ -13,6 +13,10 @@ export const validateProductData = (data) => {
     status = false;
     message.push('price field is required');
   }
+  if (!data.count) {
+    status = false;
+    message.push('count field is required');
+  }
   return {
     status,
     message: message.join(', '),
