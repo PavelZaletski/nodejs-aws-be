@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import { addProductToDb } from '../src/dataProvider';
-import { parseBodyString } from '../helpers/parseBodyString';
+import { parseBodyString, validateProductData } from '../helpers';
 
 export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
   const headers = {
@@ -9,19 +9,30 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
   };
-
-  const data = parseBodyString(event.body);
-
-  const result = await addProductToDb(data);
-
+  
   try {
+    const data = parseBodyString(event.body);
+    console.log('parsed product data - ', data);
+    const validationResult = validateProductData(data);
+    if (!validationResult.status) {
+      console.log('product data is invalid - ', validationResult.message);
+
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: validationResult.message }, null, 2),
+        headers,
+      };
+    }
+
+    const result = await addProductToDb(data);
     return {
       statusCode: 200,
-      body: JSON.stringify({body: event.body, data, result}, null, 2),
+      body: JSON.stringify({ result }, null, 2),
       headers,
     };
 
   } catch (err) {
+    console.log('Server error - ', err);
     return {
       statusCode: 500,
       body: err,

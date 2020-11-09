@@ -16,10 +16,13 @@ const dbOptions = {
 
 export const getProducts: any = async () => {
   const client = new Client(dbOptions);
-    await client.connect();
+  await client.connect();
+  console.log('Connected to DB');
 
   const ddlResult = await client.query(`
-  SELECT * FROM products INNER JOIN stocks ON products.id = stocks.product_id`);
+  SELECT * FROM products LEFT JOIN stocks ON products.id = stocks.product_id`);
+
+  console.log('Fetched products from DB - ', ddlResult.rows);
 
   return Promise.resolve(ddlResult.rows);
 }
@@ -32,6 +35,7 @@ export const getProductItemById: any = async (id) => {
 export const addProductToDb: any = async ({ title, description, price, img }) => {
   const client = new Client(dbOptions);
   await client.connect();
+  console.log('Connected to DB');
 
   const query = {
     text: 'INSERT INTO products(title, description, price, img) VALUES($1, $2, $3, $4)',
@@ -39,5 +43,6 @@ export const addProductToDb: any = async ({ title, description, price, img }) =>
   };
 
   const ddlResult = await client.query(query);
+  console.log('Saved product to DB - ', ddlResult);
   return Promise.resolve(ddlResult);
 }

@@ -20,12 +20,15 @@ export const getProductsList: APIGatewayProxyHandler = async (event, _context) =
       };
     }
 
+    console.log('Products not found');
+
     return {
       statusCode: 404,
       body: 'not found',
       headers,
     };
   } catch (err) {
+    console.log('Server error - ', err);
     return {
       statusCode: 500,
       body: err,

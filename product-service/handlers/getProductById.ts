@@ -26,6 +26,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
       headers,
     };
   } catch (err) {
+    console.log('Server error - ', err);
     return {
         statusCode: 500,
         headers,
