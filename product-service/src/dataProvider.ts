@@ -63,11 +63,11 @@ export const addProductToDb: any = async ({ title, description, price, img, coun
 
     await client.query('COMMIT');
     console.log('COMMIT');
-    return Promise.resolve({ savedProduct, savedCount });
+    return Promise.resolve({ status: 'success', savedProduct, savedCount });
   } catch (e) {
     console.log('error occured - ', e);
     await client.query('ROLLBACK');
-    return Promise.resolve({ error: e });
+    return Promise.resolve({ status: 'error', errorMessage: e });
   } finally {
     client.release();
   }

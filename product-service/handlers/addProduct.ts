@@ -28,18 +28,18 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
 
     console.log('result - ', result);
 
-    if (result.error) {
+    if (result.status === 'error') {
       console.log('Server error - ', result.error);
       return {
         statusCode: 500,
-        body: result.error,
+        body: JSON.stringify(result, null, 2),
         headers,
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ result }, null, 2),
+      body: JSON.stringify(result, null, 2),
       headers,
     };
   } catch (err) {

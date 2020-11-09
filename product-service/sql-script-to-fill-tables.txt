@@ -1,3 +1,18 @@
+create table products (
+	id uuid primary key default uuid_generate_v4(),
+	title text not null,
+	description text,
+	price integer,
+	img text
+)
+
+create table stocks (
+	product_id uuid,
+	count integer,
+	foreign key ("product_id") references "products" ("id")
+)
+
+
 insert into products (title, description, price, img) values
 ('Sony XBR-65A9G', 'Short Product Description1', 3300, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/398839-tvs-sony-xbr-65a9g-10006417.png'),
 ('LG OLED65CXAUA', 'Short Product Description2', 2250, 'https://crdms.images.consumerreports.org/f_auto,w_300/prod/products/cr/models/401489-60-inch-and-larger-tvs-lg-oled65cxaua-10014024.png'),
@@ -9,9 +24,9 @@ insert into products (title, description, price, img) values
 
 
 insert into stocks (product_id, count) values
-('ad5dfe3f-03d1-4ed3-912c-03a5a00693b7', 10),
-('8e5a269c-f326-4bb6-a35e-eaa701531854', 12),
-('dea63d92-3acc-4743-a42e-f9f0a4c1fc68', 5),
-('15c30c5f-d87c-4edf-873c-721616db5911', 7),
-('1d263c84-7c28-4160-8013-ccc85bac83f7', 15),
-('05f8415e-bbd0-4b96-83a0-79865e107196', 9)
+('2977fa0d-774e-48c9-935c-599a580d6fe0', 10),
+('e2e1c696-61f7-4479-8a5d-9b8085d60292', 12),
+('9de6c122-30e4-4c6b-b965-c9435c6465e1', 5),
+('6c578296-6f62-4253-a894-a30f70aa2d6f', 7),
+('da79de11-709d-4ed3-ac8a-5958739457e1', 15),
+('3f5883ef-d5c0-4cc9-b08a-b78e54602b77', 9)
