@@ -9,7 +9,7 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
   };
-  
+
   try {
     const data = parseBodyString(event.body);
     console.log('parsed product data - ', data);
@@ -25,12 +25,21 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     const result = await addProductToDb(data);
+
+    if (result.error) {
+      console.log('Server error - ', result.error);
+      return {
+        statusCode: 500,
+        body: result.error,
+        headers,
+      };
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ result }, null, 2),
       headers,
     };
-
   } catch (err) {
     console.log('Server error - ', err);
     return {
