@@ -12,7 +12,7 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
 
   try {
     const data = parseBodyString(event.body);
-    console.log('parsed product data - ', data);
+    console.log(`addProduct => product: ${data}`);
     const validationResult = validateProductData(data);
     if (!validationResult.status) {
       console.log('product data is invalid - ', validationResult.message);
@@ -25,8 +25,6 @@ export const addProduct: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     const result = await addProductToDb(data);
-
-    console.log('result - ', result);
 
     if (result.status === 'error') {
       console.log('Server error - ', result.error);

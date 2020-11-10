@@ -12,6 +12,7 @@ export const getProductsList: APIGatewayProxyHandler = async (event, _context) =
 
   try {
     const data = await getProducts();
+    console.log('getProductsList');
     if (data) {
       return {
         statusCode: 200,
