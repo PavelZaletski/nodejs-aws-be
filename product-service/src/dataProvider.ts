@@ -33,8 +33,12 @@ export const getProductItemById: any = async (id) => {
   await client.connect();
   console.log('Connected to DB');
 
-  const ddlResult = await client.query(`
-  SELECT * FROM products WHERE id = '${id}'`);
+  const query = {
+    text: 'SELECT * FROM products WHERE id = $1',
+    values: [id],
+  };
+
+  const ddlResult = await client.query(query);
 
   console.log('Fetched product from DB - ', ddlResult.rows);
 
@@ -50,7 +54,7 @@ export const addProductToDb: any = async ({ title, description, price, img, coun
     await client.query('BEGIN');
     const queryText = 'INSERT INTO products(title, description, price, img) VALUES($1, $2, $3, $4) RETURNING *';
     const res1 = await client.query(queryText, [title, description, +price, img]);
-    const savedProduct = res1.rows && res1.rows[0];
+    const savedProduct = res1.rows[0];
 
     console.log('saved product - ', savedProduct);
 
@@ -58,7 +62,7 @@ export const addProductToDb: any = async ({ title, description, price, img, coun
     const insertStockValues = [res1.rows[0].id, count]
     const res2 = await client.query(queryText2, insertStockValues);
 
-    const savedCount = res2.rows && res2.rows[0];
+    const savedCount = res2.rows[0];
     console.log('saved count - ', savedCount);
 
     await client.query('COMMIT');
