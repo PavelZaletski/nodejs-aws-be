@@ -12,6 +12,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
   try {  
     const id = event.pathParameters.id;
     const data = await getProductItemById(id);
+    console.log(`getProductsById => product id: ${id}`);
     if (data) {
       const body = JSON.stringify(data, null, 2);
       return {
@@ -26,6 +27,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
       headers,
     };
   } catch (err) {
+    console.log('Server error - ', err);
     return {
         statusCode: 500,
         headers,
