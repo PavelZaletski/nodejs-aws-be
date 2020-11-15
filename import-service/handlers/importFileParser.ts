@@ -2,15 +2,10 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import * as csv from 'csv-parser';
+import { headers } from '../constants';
 const BUCKET = 'node-in-aws-s3-pz';
 
 export const importFileParser: APIGatewayProxyHandler = async (event, _context) => {
-  const headers = {
-    "Access-Control-Allow-Headers" : "Content-Type",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
-  };
-
   try {  
     console.log('importFileParser =>');
     console.log(event.Records);

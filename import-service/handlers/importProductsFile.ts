@@ -1,16 +1,11 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
+import { headers } from '../constants';
 
 const BUCKET = 'node-in-aws-s3-pz';
 
 export const importProductsFile: APIGatewayProxyHandler = async (event, _context) => {
-  const headers = {
-    "Access-Control-Allow-Headers" : "Content-Type",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
-  };
-
   try {
     const catalogName = event.queryStringParameters.name;
     const catalogPath = `uploaded/${catalogName}`;
