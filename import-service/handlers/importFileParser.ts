@@ -1,23 +1,21 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { S3Event } from 'aws-lambda';
 import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import * as csv from 'csv-parser';
 import { headers } from '../constants';
 const BUCKET = 'node-in-aws-s3-pz';
 
-export const importFileParser: APIGatewayProxyHandler = async (event, _context) => {
-  try {  
-    console.log('importFileParser =>');
-    console.log(event.Records);
+export const importFileParser = async (event: S3Event, _context) => {
+  console.log('importFileParser =>');
+  console.log(event.Records);
+  try {
     for (const record of event.Records) {
-      console.log('file name =>', record.s3.object.key);
-
       const params = {
         Bucket: BUCKET,
         Key: record.s3.object.key,
       };
 
-      await parseAndCopy(params, record);
+      await parseAndSendMessage(params, record);
     }
 
     return {
@@ -35,13 +33,18 @@ export const importFileParser: APIGatewayProxyHandler = async (event, _context) 
   }
 }
 
-async function parseAndCopy(params, record) {
+async function parseAndSendMessage(params, record) {
   return new Promise((resolve, reject) => {
     const s3 = new AWS.S3({ region: 'eu-west-1' });
+    const sqs = new AWS.SQS();
+    const result = [];
 
     s3.getObject(params).createReadStream()
     .pipe(csv())
-    .on('data', (data) => console.log(data))
+    .on('data', (data) => {
+      console.log(data);
+      result.push(data);
+    })
     .on('end', async() => {
       await s3.copyObject({
         Bucket: BUCKET,
@@ -58,7 +61,18 @@ async function parseAndCopy(params, record) {
 
       console.log('deleted');
 
-      resolve();
+      sqs.sendMessage({
+        QueueUrl: process.env.SQS_URL,
+        MessageBody: JSON.stringify(result),
+      }, (err, data) => {
+        if (err) {
+          console.log('err =>', err, err.stack);
+          reject(err);
+        } else  {
+          console.log('data =>', data);  
+          resolve();
+        }
+      });
     });
-  })
+  });
 }

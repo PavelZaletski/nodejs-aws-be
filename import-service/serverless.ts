@@ -32,6 +32,12 @@ const serverlessConfiguration: Serverless = {
       PG_DATABASE: '${env:PG_DATABASE}',
       PG_USERNAME: '${env:PG_USERNAME}',
       PG_PASSWORD: '${env:PG_PASSWORD}',
+      SQS_URL: {
+        Ref: 'SQSQueue',
+      },
+      SNS_ARN: {
+        Ref: 'SNSTopic',
+      },
     },
     iamRoleStatements: [
       {
@@ -44,8 +50,52 @@ const serverlessConfiguration: Serverless = {
         Action: ['s3:*'],
         Resource: ['arn:aws:s3:::node-in-aws-s3-pz/*']
       },
-    ]
+      {
+        Effect: 'Allow',
+        Action: ['sqs:*'],
+        Resource: [
+          {
+            'Fn::GetAtt': ['SQSQueue', 'Arn'],
+          },
+        ],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['sns:*'],
+        Resource: {
+          Ref: 'SNSTopic',
+        },
+      },
+    ],
   },
+
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue',
+        }
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic',
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'pavel_zaletski@epam.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+        },
+      },
+    },
+  },
+
   functions: {
     importProductsFile: {
       handler: 'handler.importProductsFile',
@@ -73,6 +123,20 @@ const serverlessConfiguration: Serverless = {
               }
             ],
             existing: true,
+          },
+        },
+      ],
+    },
+
+    catalogBatchProcess: {
+      handler: 'handler.catalogBatchProcess',
+      events: [
+        {
+          sqs: {
+            batchSize: 5,
+            arn: {
+              'Fn::GetAtt': ['SQSQueue', 'Arn'],
+            }
           }
         }
       ]
