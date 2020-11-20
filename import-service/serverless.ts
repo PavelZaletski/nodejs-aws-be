@@ -31,7 +31,7 @@ const serverlessConfiguration: Serverless = {
       PG_PORT: '${env:PG_PORT}',
       PG_DATABASE: '${env:PG_DATABASE}',
       PG_USERNAME: '${env:PG_USERNAME}',
-      PG_PASSWORD: '${env:PG_PASSWORD}'//'izdmKWkQY3hkOmri6rdt',
+      PG_PASSWORD: '${env:PG_PASSWORD}',
     },
     iamRoleStatements: [
       {
