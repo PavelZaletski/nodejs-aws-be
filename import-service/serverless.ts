@@ -93,6 +93,26 @@ const serverlessConfiguration: Serverless = {
           },
         },
       },
+      SNSSubscriptionAdditional: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'pavel.zaletski@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+          FilterPolicy: {
+            price: [
+              {
+                "numeric": [
+                  ">=",
+                  50
+                ]
+              }
+            ]
+          }
+        },
+      },
     },
   },
 
