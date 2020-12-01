@@ -30,14 +30,6 @@ const serverlessConfiguration: Serverless = {
   functions: {
     basicAuthorizer: {
       handler: 'handler.basicAuthorizer',
-      events: [
-        {
-          http: {
-            method: 'get',
-            path: 'import',
-          }
-        }
-      ]
     },
   },
 }
