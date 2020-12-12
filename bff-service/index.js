@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 
+const cache = {};
+
 app.all('/*', (req, res) => {
   console.log('originalUrl', req.originalUrl);
   console.log('method', req.method);
@@ -18,21 +20,36 @@ app.all('/*', (req, res) => {
   const recipientUrl = process.env[recipient];
   console.log('recipientUrl', recipientUrl);
 
-  const data = {...(Object.keys(req.body || {}).length > 0 && req.body)};
+  if (recipient === 'products' && req.method === 'GET') {
+    if (cache.products) {
+      res.json(cache.products);
+      return;
+    }
+  }
 
   if (recipientUrl) {
     const axiosConfig = {
       method: req.method,
-      url: `${recipientUrl}${req.originalUrl}`,
-      data,
+      url: `${recipientUrl}${req.originalUrl}`
     };
+
+    if (Object.keys(req.body || {}).length > 0) {
+      const data = {...req.body};
+      axiosConfig.data = data;
+    }
 
     console.log('axiosConfig:', axiosConfig);
 
     axios(axiosConfig)
       .then(function(response) {
         console.log('response from recipient', response.data);
-        res.json({data2: data, ...response.data});
+        if (!cache.products && recipient === 'products' && req.method === 'GET') {
+          cache.products = response.data;
+          setTimeout(() => {
+            cache.products = null;
+          }, 120 * 1000);
+        }
+        res.json(response.data);
       })
       .catch(error => {
         console.log('some error: ', JSON.stringify(error));
@@ -42,8 +59,6 @@ app.all('/*', (req, res) => {
             status,
             data
           } = error.response;
-
-          console.log('data', data);
 
           res.status(status).json(data);
         } else {
